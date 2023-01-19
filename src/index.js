@@ -24,6 +24,12 @@ app.get('/', async (req, res) => {
 app.post('/signup', async (req, res) => {
     const {email, password} = req.body;
     try {
+        const isExist = await User.findOne({email});
+        if(isExist) {
+            return res.status(400).send({
+                message : 'User already exist Please login'
+            });
+        }
         const hashPassword = await argon2.hash(password);
         const user = await User.create({
             email,
